@@ -4,9 +4,8 @@ import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-import indexRouter from './routes/index'
-import usersRouter from './routes/users'
-import videoRouter from './routes/video'
+import usersRouter from './routes/user.route'
+import videoRouter from './routes/video.route'
 
 const app = express();
 
@@ -20,7 +19,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
-app.use('/', indexRouter)
 app.use('/user', usersRouter)
 app.use('/video', videoRouter)
 
