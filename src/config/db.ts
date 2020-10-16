@@ -1,35 +1,40 @@
-import mysql from 'mysql'
+import pgFunction from 'pg-promise'
 import 'dotenv/config'
+const initOptions = {
+    receive (data: any, result: any, e: any) {
+      camelizeColumns(data)
+    },
+    query (e: any) {
+      console.log(e.query)
+    }
+  }
+  
+  const pgp = pgFunction(initOptions)
+  
+  const cn = {
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS
+  }
+  
+  console.log(cn)
+  
+  const db = pgp(cn)
+  
+  // Camelize column names
+  function camelizeColumns (data: any) {
+    const tmp = data[0]
+    for (const prop in tmp) {
+      const camel = pgp.utils.camelize(prop)
+      if (!(camel in tmp)) {
+        for (let i = 0; i < data.length; i++) {
+          const d = data[i]
+          d[camel] = d[prop]
+          delete d[prop]
+        }
+      }
+    }
+  }
 
-const dbconfig: mysql.ConnectionConfig = {
-    host     : process.env.DB_HOST,
-    user     : process.env.DB_USER,
-    password : process.env.DB_PASS,
-    port     : Number(process.env.DB_PORT),
-    database : process.env.DB_DATABASE
-  }
-  
-  let mysqlConn = mysql.createConnection(dbconfig)
-  
-  const createMysqlConn = () => {
-  
-    mysqlConn.connect((err) => {
-      if(err) {
-        console.log('error when connecting to db:', err);
-        mysqlConn = mysql.createConnection(dbconfig)
-      }
-    });
-  
-    mysqlConn.on('error', (err) => {
-      console.log('db error', err);
-      if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-        mysqlConn = mysql.createConnection(dbconfig)
-      } else {
-        throw err;
-      }
-    });
-  
-    return mysqlConn
-  }
-  
-  const hmconn = createMysqlConn()
+  export { pgp, db }

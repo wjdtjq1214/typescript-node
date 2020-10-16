@@ -19,8 +19,8 @@
     "jade": "~1.11.0",
     "jest": "^26.5.3",
     "morgan": "~1.9.1",
-    "mysql": "^2.18.1",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "pg-promise": "^10.7.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",
